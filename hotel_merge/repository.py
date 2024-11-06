@@ -64,6 +64,15 @@ def get_hotel_by_id(id: str) -> Optional[Hotel]:
     return hotels.get(id)
 
 
-if __name__ == '__main__':
-    hotel: Hotel = get_hotel_by_id('iJhz')
-    print(hotel.model_dump_json())
+def get_hotel_by_dest(dest_id: int) -> Optional[Hotel]:
+    """
+    Retrieves a single hotel by its destination ID from the cache.
+
+    :param dest_id: The destination ID to retrieve.
+    :type dest_id: int
+    :return: The hotel data if found, otherwise None.
+    :rtype: Optional[Hotel]
+    """
+
+    _, hotels = get_hotels_as_dicts(ttl_hash(5))
+    return hotels.get(dest_id)
