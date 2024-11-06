@@ -1,0 +1,8 @@
+__pycache__
+.gitignore
+.pytest_cache
+.tool-versions
+.vscode
+README.md
+requirements-dev.txt
+tests
