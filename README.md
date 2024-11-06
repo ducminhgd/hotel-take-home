@@ -58,6 +58,13 @@ Python is good at serializing those cases. Another candidate is PHP.
 2. Add new method for single dispatching into class `Hotel` in `models/hotel.py`.
 3. Add new endpoint and serializing-data class into `settings.py`
 
+### CI/CD
+
+- [x] Create a test job.
+- [x] Scan source code (with https://github.com/aquasecurity/trivy)
+- [x] Scan image (with https://github.com/aquasecurity/trivy)
+
+
 ### Improvements
 
 > This section lists the improvements that can be made to the project if it is not just a take-home assignment.
