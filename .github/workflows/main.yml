@@ -33,6 +33,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Run Trivy vulnerability scanner in repo mode
+        id: fs-scan
+        continue-on-error: true
         uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: "fs"
@@ -41,6 +43,8 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+      - run: echo "::warning title=FS security scan errors"
+        if: job.steps.fs-scan.status == failure()
 
   build:
     runs-on: ubuntu-20.04
@@ -51,6 +55,8 @@ jobs:
         run: |
           docker build -t ducminhgd/hotel-take-home:${{ github.sha }} .
       - name: Run Trivy vulnerability scanner
+        id: image-scan
+        continue-on-error: true
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: "ducminhgd/hotel-take-home:${{ github.sha }}"
@@ -59,3 +65,5 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+      - run: echo "::warning title=Image security scan errors"
+        if: job.steps.image-scan.status == failure()

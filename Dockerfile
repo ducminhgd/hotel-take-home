@@ -1,4 +1,4 @@
-FROM python:3.9-slim AS python-builder-3.9
+FROM python:3.9.20-slim AS python-builder-3.9
 
 WORKDIR /install
 COPY requirements.txt ./
@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y gcc libssl-dev g++ make git build-essen
     && apt-get clean autoclean && apt-get autoremove --yes && rm -rf /var/lib/{apt,dpkg,cache,log}/
 RUN pip install --prefix=/install -r requirements.txt && pyclean .
 
-FROM python:3.9-slim
+FROM python:3.9.20-slim
 
 WORKDIR /app
 COPY --from=python-builder-3.9 /install /usr/local
