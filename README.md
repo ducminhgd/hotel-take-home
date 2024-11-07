@@ -18,6 +18,13 @@ Require Python 3.9+.
 
 ## Documentation
 
+### Environment variables
+
+- `ACME_URL_ENDPOINT`: URL of ACME API.
+- `PATAGONIA_URL_ENDPOINT`: URL of Patagonia API.
+- `PAPERFLIES_URL_ENDPOINT`: URL of Paperflies API.
+- `CACHE_TTL`: time-to-live of a cache, in seconds. Default is 10 seconds.
+
 ### Why I choose python?
 
 Because there are some field that:
@@ -64,7 +71,6 @@ Python is good at serializing those cases. Another candidate is PHP.
 - [x] Scan source code (with https://github.com/aquasecurity/trivy)
 - [x] Scan image (with https://github.com/aquasecurity/trivy)
 
-
 ### Improvements
 
 > This section lists the improvements that can be made to the project if it is not just a take-home assignment.
@@ -72,9 +78,10 @@ Python is good at serializing those cases. Another candidate is PHP.
 1. Scaling the project
    1. We have to use a database to store our data, which is the model `Hotel`.
       1. I suggest we can use a relational database such as MySQL or PostgreSQL (preferred, and use `pgbouncer` for global connection pool management).
-   2. Apply distributed caching, I suggest to use Redis 6.
+   2. Apply distributed caching, I suggest to use Redis 6. Using Write Around - Cache Aside strategy.
    3. If we have to serve a huge number of requests, we can consider to write hotels data into JSON files and upload to CDN.
 2. Optimize Amenities: some suppliers may not categorize their amenities, such as Patagonia. So there are two approaches:
    1. Merge all amenities into `general` field.
    2. Categorize amenities into categories. This approach costs more effort, but I suggest that we should do it to have more detailed data.
 3. Data type of coordinates should be string, not float. Because some suppliers may provide "long float numbers" for more detail coordinates, in some programing languages, or especially Javascript (we are using JSON resposes), they are converted into strings.
+4. If we have a lot of data, pagination for this API is highly recommended.

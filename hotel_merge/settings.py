@@ -11,3 +11,5 @@ DATACLASSES = {
     'patagonia': 'models.patagonia.PatagoniaHotel',
     'paperflies': 'models.paperflies.PaperfliesHotel',
 }
+
+CACHE_TTL = int(os.getenv('CACHE_TTL', 10))

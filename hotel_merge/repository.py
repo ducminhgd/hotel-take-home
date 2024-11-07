@@ -1,7 +1,8 @@
 import settings
 import requests
+from collections import defaultdict
 from functools import lru_cache
-from typing import Union, Optional
+from typing import Union, Optional, List
 from models.acme import ACMEHotel
 from models.patagonia import PatagoniaHotel
 from models.paperflies import PaperfliesHotel
@@ -34,7 +35,7 @@ def get_hotels_as_dicts(ttl: Optional[int] = None) -> tuple[dict[Hotel], dict[Ho
     del ttl
 
     list_by_id: dict[Hotel] = dict()
-    list_by_dest: dict[Hotel] = dict()
+    list_by_dest: dict[dict[Hotel]] = defaultdict(dict)
     for supplier, url in settings.ENDPOINTS.items():
         kls = import_class_by_path(settings.DATACLASSES[supplier])
         sup_hotels = get_hotels_by_supplier(url, kls)
@@ -45,9 +46,9 @@ def get_hotels_as_dicts(ttl: Optional[int] = None) -> tuple[dict[Hotel], dict[Ho
             list_by_id[h_id].append_info(h)
 
     h: Hotel
-    for _, h in list_by_id.items():
+    for h_id, h in list_by_id.items():
         h.normalize()
-        list_by_dest[h.destination_id] = h
+        list_by_dest[h.destination_id][h_id] = h
     return list_by_id, list_by_dest
 
 
@@ -60,19 +61,19 @@ def get_hotel_by_id(id: str) -> Optional[Hotel]:
     :return: The hotel data if found, otherwise None.
     :rtype: Optional[Hotel]
     """
-    hotels, _ = get_hotels_as_dicts(ttl_hash(5))
+    hotels, _ = get_hotels_as_dicts(ttl_hash(settings.CACHE_TTL))
     return hotels.get(id)
 
 
-def get_hotel_by_dest(dest_id: int) -> Optional[Hotel]:
+def get_hotel_by_dest(dest_id: int) -> dict[dict[Hotel]]:
     """
-    Retrieves a single hotel by its destination ID from the cache.
+    Retrieves a dictionary of hotels by their destination ID from the cache.
 
-    :param dest_id: The destination ID to retrieve.
+    :param dest_id: The destination ID to retrieve hotels for.
     :type dest_id: int
-    :return: The hotel data if found, otherwise None.
-    :rtype: Optional[Hotel]
+    :return: A dictionary mapping hotel IDs to Hotel objects for the specified 
+             destination, or None if no hotels are found for the destination.
+    :rtype: dict[dict[Hotel]]
     """
-
-    _, hotels = get_hotels_as_dicts(ttl_hash(5))
+    _, hotels = get_hotels_as_dicts(ttl_hash(settings.CACHE_TTL))
     return hotels.get(dest_id)

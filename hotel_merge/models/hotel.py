@@ -1,6 +1,6 @@
 """This module is the model for our system Hotel
 """
-from typing import List
+from typing import List, Union
 
 from pydantic import BaseModel, model_serializer, Field
 from models.acme import ACMEHotel
@@ -10,8 +10,8 @@ from helpers import remove_duplicates, method_dispatch
 
 
 class LocationField(BaseModel, str_strip_whitespace=True):
-    lat: float | None = None
-    lng: float | None = None
+    lat: Union[float, None] = None
+    lng: Union[float, None] = None
     address: str = ''
     city: str = ''
     country: str = ''
@@ -80,8 +80,7 @@ class Hotel(BaseModel, str_strip_whitespace=True):
 
     @method_dispatch
     def append_info(self, obj):
-        raise NotImplementedError(f'Not implemented for {
-                                  obj.__class__.__name__}')
+        raise NotImplementedError(f'Not implemented for {obj.__class__.__name__}')
 
     @append_info.register(ACMEHotel)
     def _append_info_acme(self, obj: ACMEHotel):

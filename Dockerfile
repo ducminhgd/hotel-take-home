@@ -4,8 +4,9 @@ WORKDIR /install
 COPY requirements.txt ./
 RUN apt-get update && apt-get install -y gcc libssl-dev g++ make git build-essential \
     && pip install --upgrade pip \
+    && pip install --upgrade pyclean \
     && apt-get clean autoclean && apt-get autoremove --yes && rm -rf /var/lib/{apt,dpkg,cache,log}/
-RUN pip install --prefix=/install -r requirements.txt
+RUN pip install --prefix=/install -r requirements.txt && pyclean .
 
 FROM python:3.9-slim
 

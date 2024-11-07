@@ -37,8 +37,8 @@ class PatagoniaHotel(BaseModel, str_strip_whitespace=True):
     id: str
     destination_id: int = Field(alias="destination")
     name: str
-    lat: float | None
-    lng: float | None
+    lat: Union[float, None] = None
+    lng: Union[float, None] = None
     address: str
     description: str = Field(alias="info")
     amenities: List[str]
